@@ -1,4 +1,4 @@
-import { AuthenticationError, Ctx } from "blitz"
+import { Ctx, AuthenticationError } from "blitz"
 import db from "db"
 
 export default async function getCurrentUser(_ = null, ctx: Ctx) {

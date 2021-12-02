@@ -1,48 +1,44 @@
-// import login from "app/auth/mutations/login"
-// import signup from "app/auth/mutations/signup"
+import { invoke } from "blitz"
 import { AuthProvider, LegacyAuthProvider } from "react-admin"
-import { useMutation } from "blitz"
+import login from "app/auth/mutations/login"
+import logout from "app/auth/mutations/logout"
 import getCurrentUser from "app/users/queries/getCurrentUser"
 
 type Provider = AuthProvider | LegacyAuthProvider
 
-// const antiCSRFToken = getAntiCSRFToken()
-
-const provider = (loginMutation: any, signupMutation: any): Provider => ({
-  // called when the user attempts to log in
+const provider: Provider = {
   login: async ({ username, password }) => {
-    console.log("laksdjfklajsdf")
-    try {
-      return loginMutation({ email: username, password })
-    } catch (error) {
-      console.log({ error })
-      return signupMutation({ email: username, password })
-    }
-    // localStorage.setItem("username", username)
-    // // accept all username/password combinations
-    // return Promise.resolve()
+    await invoke(login, { email: username, password })
   },
-  // called when the user clicks on the logout button
-  logout: () => {
-    localStorage.removeItem("username")
-    return Promise.resolve()
-  },
-  // called when the API returns an error
-  checkError: ({ status }) => {
-    console.log({ status })
 
-    if (status === 401 || status === 403) {
-      localStorage.removeItem("username")
+  logout: async () => {
+    await invoke(logout, {})
+  },
+
+  checkError: (error) => {
+    const { statusCode } = error
+
+    if (statusCode === 401 || statusCode === 403) {
       return Promise.reject()
     }
+
     return Promise.resolve()
   },
-  // called when the user navigates to a new location, to check for authentication
+
   checkAuth: async () => {
-    getCurrentUser(null, {} as any)
+    await invoke(getCurrentUser, null)
   },
-  // called when the user navigates to a new location, to check for permissions / roles
+
   getPermissions: () => Promise.resolve(),
-})
+
+  getIdentity: async () => {
+    const user = await invoke(getCurrentUser, null)
+
+    return {
+      id: user!.id as number,
+      fullName: user!.name as string,
+    }
+  },
+}
 
 export default provider
