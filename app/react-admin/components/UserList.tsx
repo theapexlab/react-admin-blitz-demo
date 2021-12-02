@@ -17,7 +17,7 @@ const userFilters = [
 ]
 
 export const UserList = (props) => (
-  <List filters={userFilters} {...props}>
+  <List filters={userFilters} {...props} exporter={false}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <DateField source="createdAt" />
