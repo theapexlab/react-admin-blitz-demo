@@ -4,6 +4,10 @@ import { z } from "zod"
 
 const CreatePost = z.object({
   name: z.string(),
+  title: z.string(),
+  content: z.string(),
+  published: z.boolean(),
+  userId: z.number(),
 })
 
 export default resolver.pipe(

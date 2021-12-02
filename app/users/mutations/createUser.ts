@@ -4,6 +4,8 @@ import { z } from "zod"
 
 const CreateUser = z.object({
   name: z.string(),
+  email: z.string(),
+  hashedPassword: z.string(),
 })
 
 export default resolver.pipe(

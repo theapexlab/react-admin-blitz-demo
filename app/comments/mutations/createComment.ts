@@ -4,6 +4,9 @@ import { z } from "zod"
 
 const CreateComment = z.object({
   name: z.string(),
+  email: z.string(),
+  body: z.string(),
+  postId: z.number(),
 })
 
 export default resolver.pipe(resolver.zod(CreateComment), resolver.authorize(), async (input) => {
