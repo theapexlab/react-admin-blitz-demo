@@ -1,6 +1,6 @@
 import React, { Suspense } from "react"
 import { BlitzPage } from "blitz"
-import ReactAdmin from "app/core/components/ReactAdmin"
+import ReactAdmin from "app/react-admin/components/ReactAdmin"
 import Layout from "app/core/layouts/Layout"
 
 const Home: BlitzPage = () => {

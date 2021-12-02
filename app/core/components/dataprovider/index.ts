@@ -1,76 +1,10 @@
-import { DataProvider, GetListParams } from "ra-core"
-
-const getEntityNameFromResource = (resource: string) => {
-  const entityName = resource.charAt(0).toUpperCase() + resource.slice(1, -1)
-  return entityName
-}
-
-const getPluralEntityName = (entityName: string) => {
-  return `${entityName}s`
-}
-
-const mapSearch = (params) => {
-  const { q, ...filters } = params.filter || {}
-
-  // TODO: add the ability for the user to add custom mapping
-  const search = q
-    ? {
-        email: {
-          contains: q,
-        },
-      }
-    : undefined
-
-  return {
-    where: {
-      ...search,
-      ...filters,
-    },
-  }
-}
-
-const mapPaginationParams = (params: GetListParams) => {
-  const { page, perPage } = params.pagination
-  const { field, order } = params.sort
-
-  return {
-    orderBy: {
-      [field]: order.toLowerCase(),
-    },
-    skip: (page - 1) * perPage,
-    take: perPage,
-  }
-}
-
-enum QueryMethod {
-  Get = "get",
-  Update = "update",
-  Create = "create",
-  Delete = "delete",
-}
-
-type GetQueryModuleParams = {
-  resource: string
-  method?: QueryMethod
-  plural?: boolean
-}
-
-const getQueryModule = async ({
-  resource,
-  method = QueryMethod.Get,
-  plural = false,
-}: GetQueryModuleParams) => {
-  if (!["create", "get", "update", "delete"].includes(method)) {
-    throw new Error("Unknown method")
-  }
-
-  const entityName = getEntityNameFromResource(resource)
-  const folder = method === QueryMethod.Get ? "queries" : "mutations"
-
-  return import(
-    `app/${resource}/${folder}/${method}${plural ? getPluralEntityName(entityName) : entityName}.ts`
-  )
-}
+import { QueryMethod } from "app/react-admin/providers/data/types"
+import {
+  getQueryModule,
+  mapPaginationParams,
+  mapSearch,
+} from "app/react-admin/providers/data/utils"
+import { DataProvider } from "ra-core"
 
 const provider = (): DataProvider => ({
   getList: async (resource, params) => {
