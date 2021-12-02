@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=ra-blitz-demo
+      - POSTGRES_USER=ra-blitz-demo
+      - POSTGRES_PASSWORD=ra-blitz-demo
