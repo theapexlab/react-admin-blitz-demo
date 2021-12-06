@@ -3,12 +3,18 @@ import { AuthProvider, LegacyAuthProvider } from "react-admin"
 import login from "app/auth/mutations/login"
 import logout from "app/auth/mutations/logout"
 import getCurrentUser from "app/users/queries/getCurrentUser"
+import signup from "app/auth/mutations/signup"
 
 type Provider = AuthProvider | LegacyAuthProvider
 
 const provider: Provider = {
   login: async ({ username, password }) => {
-    await invoke(login, { email: username, password })
+    try {
+      await invoke(login, { email: username, password })
+    } catch (error) {
+      console.log("Login failed, lets try to sign up: ", error)
+      await invoke(signup, { email: username, password })
+    }
   },
 
   logout: async () => {
